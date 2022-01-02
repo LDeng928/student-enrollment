@@ -1,6 +1,8 @@
+from enum import unique
 from flask.wrappers import Response
-from application import app
+from application import app, db
 from flask import json, render_template, request, json, Response
+from application.models import User, Course, Enrollment
 
 # Global dummy data
 course_data = [
@@ -51,7 +53,7 @@ def index():
 def login():
     return render_template("login.html", login=True)
 
-@app.route("/courses")
+@app.route("/courses/")
 @app.route("/courses/<term>")
 def courses(term="Spring 2019"):
     return render_template("courses.html", course_data = course_data, courses=True, term=term)
@@ -79,3 +81,12 @@ def api(idx=None):
         json_data = course_data[int(idx)]
     
     return Response(json.dumps(json_data), mimetype="application/json")
+
+
+
+@app.route("/user")
+def user():
+    # User(user_id=1, first_name='John', last_name='Doe', email='jdoe@gmail.com', password='1234').save()
+    # User(user_id=2, first_name='Jane', last_name='Doe', email='janedoe@gmail.com', password='1234').save()
+    users = User.objects.all()
+    return render_template("user.html", users=users)
